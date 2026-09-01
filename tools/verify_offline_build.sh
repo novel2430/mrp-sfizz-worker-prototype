@@ -17,10 +17,14 @@ else
   echo "need nm or objdump to inspect exported symbols" >&2
   exit 2
 fi
-printf '%s\n' "$SYMS" | grep -q 'sfizz_capture_offline_baseline' || {
-  echo "MISSING sfizz_capture_offline_baseline" >&2; exit 1;
-}
-printf '%s\n' "$SYMS" | grep -q 'sfizz_prepare_offline_task' || {
-  echo "MISSING sfizz_prepare_offline_task" >&2; exit 1;
-}
+for sym in \
+  sfizz_get_offline_render_api_version \
+  sfizz_set_offline_ram_loading \
+  sfizz_seal_offline_instrument \
+  sfizz_begin_offline_task
+do
+  printf '%s\n' "$SYMS" | grep -q "$sym" || {
+    echo "MISSING $sym" >&2; exit 1;
+  }
+done
 echo "PASS: patched offline ABI is exported by $LIB"

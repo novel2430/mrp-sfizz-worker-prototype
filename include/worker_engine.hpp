@@ -41,7 +41,6 @@ public:
 private:
     void create_synth();
     void destroy_synth();
-    std::string make_ram_text(const std::string& path) const;
     void prepare_task(unsigned int seed);
     void dispatch(const Event& e, int delay);
 

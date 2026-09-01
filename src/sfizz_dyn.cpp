@@ -9,7 +9,7 @@ SfizzDyn::SfizzDyn(const std::string& path) {
 
     create_synth = require<sfizz_create_synth_fn>("sfizz_create_synth");
     free_synth = require<sfizz_free_fn>("sfizz_free");
-    load_string = require<sfizz_load_string_fn>("sfizz_load_string");
+    load_file = require<sfizz_load_file_fn>("sfizz_load_file");
     set_samples_per_block = require<sfizz_set_samples_per_block_fn>("sfizz_set_samples_per_block");
     set_sample_rate = require<sfizz_set_sample_rate_fn>("sfizz_set_sample_rate");
     set_num_voices = require<sfizz_set_num_voices_fn>("sfizz_set_num_voices");
@@ -20,8 +20,10 @@ SfizzDyn::SfizzDyn(const std::string& path) {
     send_cc = require<sfizz_send_cc_fn>("sfizz_send_cc");
     send_pitch_wheel = require<sfizz_send_pitch_wheel_fn>("sfizz_send_pitch_wheel");
     render_block = require<sfizz_render_block_fn>("sfizz_render_block");
-    capture_offline_baseline = require<sfizz_capture_offline_baseline_fn>("sfizz_capture_offline_baseline");
-    prepare_offline_task = require<sfizz_prepare_offline_task_fn>("sfizz_prepare_offline_task");
+    get_offline_render_api_version = require<sfizz_get_offline_render_api_version_fn>("sfizz_get_offline_render_api_version");
+    set_offline_ram_loading = require<sfizz_set_offline_ram_loading_fn>("sfizz_set_offline_ram_loading");
+    seal_offline_instrument = require<sfizz_seal_offline_instrument_fn>("sfizz_seal_offline_instrument");
+    begin_offline_task = require<sfizz_begin_offline_task_fn>("sfizz_begin_offline_task");
     get_num_active_voices = require<sfizz_get_num_active_voices_fn>("sfizz_get_num_active_voices");
     get_num_regions = require<sfizz_get_num_regions_fn>("sfizz_get_num_regions");
     get_num_preloaded_samples = require<sfizz_get_num_preloaded_samples_fn>("sfizz_get_num_preloaded_samples");

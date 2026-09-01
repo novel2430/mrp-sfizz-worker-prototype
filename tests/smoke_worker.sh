@@ -19,7 +19,7 @@ printf 'LOAD\t%s\nRENDER\t%s\t%s\t123\nRENDER\t%s\t%s\t123\nQUIT\n' \
   "$PWD/.test-out/a.mrpev" "$PWD/.test-out/a1.wav" \
   "$PWD/.test-out/a.mrpev" "$PWD/.test-out/a2.wav" \
   | build/mrp-sfizz-worker --libsfizz "$LIB" > .test-out/worker.log
-grep -q '^READY.*protocol=3.*offline_baseline=1' .test-out/worker.log
+grep -q '^READY.*protocol=3.*offline_api=1' .test-out/worker.log
 grep -q '^OK.*LOAD' .test-out/worker.log
 [ "$(grep -c '^OK.*RENDER' .test-out/worker.log)" -eq 2 ]
 [ "$(grep -c 'instrument_loads=1' .test-out/worker.log)" -eq 2 ]

@@ -9,8 +9,9 @@ A worker process owns one `sfizz_synth_t` and one resident SFZ instrument for it
 ```text
 process start
   -> create Synth
-  -> LOAD one SFZ in RAM mode
-  -> capture canonical offline baseline
+  -> enable host-forced RAM loading
+  -> LOAD the original SFZ file once
+  -> seal canonical offline baseline
   -> RENDER(seed)
   -> RENDER(seed)
   -> ...
@@ -19,24 +20,23 @@ process start
 
 `LOAD` is intentionally one-shot. Loading another instrument requires starting another worker process.
 
-Every `RENDER` automatically calls the patched libsfizz `sfizz_prepare_offline_task(synth, seed)` before dispatching MIDI events. Fresh-task restoration is therefore part of the renderer contract, not a selectable reset policy.
+Every `RENDER` automatically calls the forked libsfizz `sfizz_begin_offline_task(synth, seed)` before dispatching MIDI events. Fresh-task restoration is therefore part of the renderer contract, not a selectable reset policy.
 
 ## Required libsfizz extension
 
-The worker requires these two symbols in addition to the public sfizz 1.x C ABI used for rendering:
+The worker requires persistent-offline extension API version 1:
 
 ```c
-void sfizz_capture_offline_baseline(sfizz_synth_t* synth);
-void sfizz_prepare_offline_task(sfizz_synth_t* synth, unsigned int seed);
+unsigned int sfizz_get_offline_render_api_version(void);
+void sfizz_set_offline_ram_loading(sfizz_synth_t* synth, bool enabled);
+bool sfizz_seal_offline_instrument(sfizz_synth_t* synth);
+bool sfizz_begin_offline_task(sfizz_synth_t* synth, unsigned int seed);
 ```
 
-The current Phase 01 build helper still applies the exact 1.2.3 experiment patch. Moving that patch into a pinned sfizz fork is intentionally deferred to Phase 02.
-
-## RAM loading
-
-The prototype currently reads the root SFZ text, forces `hint_ram_based=1`, and calls `sfizz_load_string()` with the original SFZ path as the virtual path. This keeps sample/include resolution relative to the original instrument while avoiding the streaming path.
-
-This source-text injection is still prototype machinery. A cleaner sfizz-side RAM-loading API may replace it in a later phase.
+The worker enables RAM loading before `sfizz_load_file()`. The original SFZ is
+loaded directly; the host no longer rewrites the SFZ source to inject
+`hint_ram_based=1`. After loading, the worker seals the canonical performance
+baseline exactly once.
 
 ## Process isolation
 

@@ -17,7 +17,7 @@ enum sfizz_process_mode_t {
 
 using sfizz_create_synth_fn = sfizz_synth_t* (*)();
 using sfizz_free_fn = void (*)(sfizz_synth_t*);
-using sfizz_load_string_fn = bool (*)(sfizz_synth_t*, const char*, const char*);
+using sfizz_load_file_fn = bool (*)(sfizz_synth_t*, const char*);
 using sfizz_set_samples_per_block_fn = void (*)(sfizz_synth_t*, int);
 using sfizz_set_sample_rate_fn = void (*)(sfizz_synth_t*, float);
 using sfizz_set_num_voices_fn = void (*)(sfizz_synth_t*, int);
@@ -28,8 +28,10 @@ using sfizz_send_note_off_fn = void (*)(sfizz_synth_t*, int, int, int);
 using sfizz_send_cc_fn = void (*)(sfizz_synth_t*, int, int, int);
 using sfizz_send_pitch_wheel_fn = void (*)(sfizz_synth_t*, int, int);
 using sfizz_render_block_fn = void (*)(sfizz_synth_t*, float**, int, int);
-using sfizz_capture_offline_baseline_fn = void (*)(sfizz_synth_t*);
-using sfizz_prepare_offline_task_fn = void (*)(sfizz_synth_t*, unsigned int);
+using sfizz_get_offline_render_api_version_fn = unsigned int (*)();
+using sfizz_set_offline_ram_loading_fn = void (*)(sfizz_synth_t*, bool);
+using sfizz_seal_offline_instrument_fn = bool (*)(sfizz_synth_t*);
+using sfizz_begin_offline_task_fn = bool (*)(sfizz_synth_t*, unsigned int);
 using sfizz_get_num_active_voices_fn = int (*)(sfizz_synth_t*);
 using sfizz_get_num_regions_fn = int (*)(sfizz_synth_t*);
 using sfizz_get_num_preloaded_samples_fn = std::size_t (*)(sfizz_synth_t*);

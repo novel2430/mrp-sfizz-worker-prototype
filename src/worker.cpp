@@ -49,10 +49,13 @@ int main(int argc, char** argv) {
         if (lib.empty()) { usage(); return 2; }
 
         SfizzDyn api(lib);
+        const unsigned int offline_api = api.get_offline_render_api_version();
+        if (offline_api < 1)
+            throw std::runtime_error("libsfizz offline render API version is unsupported");
         WorkerEngine engine(api, cfg);
         std::cout << "READY\tprotocol=3\tsample_rate=" << cfg.sample_rate
                   << "\tblock_size=" << cfg.block_size << "\tpolyphony=" << cfg.polyphony
-                  << "\tquality=" << cfg.quality << "\toffline_baseline=1" << std::endl;
+                  << "\tquality=" << cfg.quality << "\toffline_api=" << offline_api << std::endl;
 
         std::string line;
         while (std::getline(std::cin, line)) {

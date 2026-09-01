@@ -12,7 +12,7 @@ public:
 
     sfizz_create_synth_fn create_synth{};
     sfizz_free_fn free_synth{};
-    sfizz_load_string_fn load_string{};
+    sfizz_load_file_fn load_file{};
     sfizz_set_samples_per_block_fn set_samples_per_block{};
     sfizz_set_sample_rate_fn set_sample_rate{};
     sfizz_set_num_voices_fn set_num_voices{};
@@ -23,8 +23,10 @@ public:
     sfizz_send_cc_fn send_cc{};
     sfizz_send_pitch_wheel_fn send_pitch_wheel{};
     sfizz_render_block_fn render_block{};
-    sfizz_capture_offline_baseline_fn capture_offline_baseline{};
-    sfizz_prepare_offline_task_fn prepare_offline_task{};
+    sfizz_get_offline_render_api_version_fn get_offline_render_api_version{};
+    sfizz_set_offline_ram_loading_fn set_offline_ram_loading{};
+    sfizz_seal_offline_instrument_fn seal_offline_instrument{};
+    sfizz_begin_offline_task_fn begin_offline_task{};
     sfizz_get_num_active_voices_fn get_num_active_voices{};
     sfizz_get_num_regions_fn get_num_regions{};
     sfizz_get_num_preloaded_samples_fn get_num_preloaded_samples{};

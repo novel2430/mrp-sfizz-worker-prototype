@@ -3,9 +3,6 @@
 #include <algorithm>
 #include <chrono>
 #include <cmath>
-#include <fstream>
-#include <regex>
-#include <sstream>
 #include <stdexcept>
 #include <vector>
 
@@ -28,40 +25,18 @@ void WorkerEngine::destroy_synth() {
     if (synth_) { api_.free_synth(synth_); synth_ = nullptr; }
 }
 
-std::string WorkerEngine::make_ram_text(const std::string& path) const {
-    std::ifstream in(path, std::ios::binary);
-    if (!in) throw std::runtime_error("cannot read SFZ: " + path);
-    std::ostringstream ss; ss << in.rdbuf();
-    std::string text = ss.str();
-    std::regex existing(R"((\bhint_ram_based\s*=\s*)[^\s<]+)", std::regex::icase);
-    std::smatch existing_match;
-    if (std::regex_search(text, existing_match, existing)) {
-        text.replace(static_cast<std::size_t>(existing_match.position(0)),
-                     static_cast<std::size_t>(existing_match.length(0)),
-                     existing_match.str(1) + "1");
-        return text;
-    }
-    std::regex control(R"(<control\s*>)", std::regex::icase);
-    std::smatch m;
-    if (std::regex_search(text, m, control)) {
-        auto pos = static_cast<std::size_t>(m.position() + m.length());
-        text.insert(pos, "\nhint_ram_based=1\n");
-        return text;
-    }
-    return std::string("<control>\nhint_ram_based=1\n") + text;
-}
-
 LoadStats WorkerEngine::load(const std::string& sfz_path) {
     if (instrument_loaded_)
         throw std::runtime_error("worker already owns an instrument; start a new worker to load another SFZ");
 
-    const std::string sfz_text = make_ram_text(sfz_path);
+    api_.set_offline_ram_loading(synth_, true);
     auto t0 = Clock::now();
-    if (!api_.load_string(synth_, sfz_path.c_str(), sfz_text.c_str()))
+    if (!api_.load_file(synth_, sfz_path.c_str()))
         throw std::runtime_error("libsfizz failed to load SFZ: " + sfz_path);
     ++instrument_load_count_;
 
-    api_.capture_offline_baseline(synth_);
+    if (!api_.seal_offline_instrument(synth_))
+        throw std::runtime_error("libsfizz failed to seal offline instrument baseline");
     instrument_loaded_ = true;
 
     auto t1 = Clock::now();
@@ -76,7 +51,8 @@ LoadStats WorkerEngine::load(const std::string& sfz_path) {
 void WorkerEngine::prepare_task(unsigned int seed) {
     if (!instrument_loaded_)
         throw std::runtime_error("render requested before LOAD");
-    api_.prepare_offline_task(synth_, seed);
+    if (!api_.begin_offline_task(synth_, seed))
+        throw std::runtime_error("libsfizz rejected offline task begin");
 }
 
 void WorkerEngine::dispatch(const Event& e, int delay) {
