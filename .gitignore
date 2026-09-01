@@ -5,3 +5,4 @@ build/
 quick-gate.sh
 __pycache__/
 .env
+tools/__pycache__/
