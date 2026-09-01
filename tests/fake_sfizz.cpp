@@ -1,3 +1,4 @@
+#include <cstdint>
 #include "sfizz_abi_min.h"
 #include <algorithm>
 #include <cmath>
@@ -38,5 +39,5 @@ bool sfizz_begin_offline_task(sfizz_synth_t* s,unsigned int){if(!s->loaded)retur
 int sfizz_get_num_active_voices(sfizz_synth_t* s){return s->note>=0?1:0;}
 int sfizz_get_num_regions(sfizz_synth_t*){return 1;}
 std::size_t sfizz_get_num_preloaded_samples(sfizz_synth_t*){return 1234;}
-int sfizz_get_num_bytes(sfizz_synth_t*){return 5678;}
+uint64_t sfizz_get_num_bytes64(sfizz_synth_t*){return 2649309424ULL;}
 }

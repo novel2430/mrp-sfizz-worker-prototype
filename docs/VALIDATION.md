@@ -59,3 +59,49 @@ The intermediate B used a different MIDI history and produced a different hash, 
 The remaining renderer-level validation is multiple independent RAM-based persistent worker processes rendering concurrently. `tools/parallel_pool_probe.py` is retained for that Phase 04 check.
 
 Real Piano/SM_Drums files are intentionally not part of the automated test suite because they are local heavyweight assets. `make test` only covers self-contained host/protocol regressions.
+
+## Phase 04 concurrency acceptance
+
+Phase 04 intentionally keeps the test matrix small. It validates the production
+execution primitive only: multiple independent resident worker processes, each
+with one Synth and one RAM-resident instrument, rendering concurrently.
+
+The probe starts every render step behind a thread barrier and checks only three
+properties:
+
+- all workers produce the same PCM hash for the same step and seed;
+- for an `A B A` sequence, each worker's first and final A match;
+- every render reports `instrument_loads=1`.
+
+Recommended checks:
+
+```bash
+# Piano: three resident processes rendering the same task concurrently.
+python tools/parallel_pool_probe.py \
+  --libsfizz "$LIBSFIZZ" \
+  --sfz "$PIANO_SFZ" \
+  --workers 3 \
+  --seed 0 \
+  --out-dir /tmp/mrp-piano-c3 \
+  "$PIANO_MIDI"
+
+# SM_Drums: two ~4.8 GB resident processes rendering concurrently.
+python tools/parallel_pool_probe.py \
+  --libsfizz "$LIBSFIZZ" \
+  --sfz "$DRUM_SFZ" \
+  --workers 2 \
+  --seed 0 \
+  --out-dir /tmp/mrp-drums-c2 \
+  "$DRUM_MIDI"
+
+# SM_Drums: concurrency plus cross-task isolation.
+python tools/parallel_pool_probe.py \
+  --libsfizz "$LIBSFIZZ" \
+  --sfz "$DRUM_SFZ" \
+  --workers 2 \
+  --seed 0 \
+  --out-dir /tmp/mrp-drums-c2-aba \
+  "$DRUM_MIDI" "$DRUM_MIDI_B" "$DRUM_MIDI"
+```
+
+A successful run ends with `RESULT=PASS`.

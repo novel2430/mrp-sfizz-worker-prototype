@@ -30,7 +30,7 @@ public:
     sfizz_get_num_active_voices_fn get_num_active_voices{};
     sfizz_get_num_regions_fn get_num_regions{};
     sfizz_get_num_preloaded_samples_fn get_num_preloaded_samples{};
-    sfizz_get_num_bytes_fn get_num_bytes{};
+    sfizz_get_num_bytes64_fn get_num_bytes64{};
 
 private:
     void* handle_{};

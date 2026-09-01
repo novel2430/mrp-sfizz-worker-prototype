@@ -27,7 +27,7 @@ SfizzDyn::SfizzDyn(const std::string& path) {
     get_num_active_voices = require<sfizz_get_num_active_voices_fn>("sfizz_get_num_active_voices");
     get_num_regions = require<sfizz_get_num_regions_fn>("sfizz_get_num_regions");
     get_num_preloaded_samples = require<sfizz_get_num_preloaded_samples_fn>("sfizz_get_num_preloaded_samples");
-    get_num_bytes = require<sfizz_get_num_bytes_fn>("sfizz_get_num_bytes");
+    get_num_bytes64 = require<sfizz_get_num_bytes64_fn>("sfizz_get_num_bytes64");
 }
 
 SfizzDyn::~SfizzDyn() {

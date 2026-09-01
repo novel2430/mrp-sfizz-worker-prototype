@@ -18,7 +18,7 @@ struct LoadStats {
     double milliseconds{};
     int regions{};
     std::size_t preloaded_samples{};
-    int sfizz_bytes{};
+    std::uint64_t sfizz_bytes{};
 };
 
 struct RenderStats {

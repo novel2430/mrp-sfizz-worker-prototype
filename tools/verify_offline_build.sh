@@ -21,7 +21,8 @@ for sym in \
   sfizz_get_offline_render_api_version \
   sfizz_set_offline_ram_loading \
   sfizz_seal_offline_instrument \
-  sfizz_begin_offline_task
+  sfizz_begin_offline_task \
+  sfizz_get_num_bytes64
 do
   printf '%s\n' "$SYMS" | grep -q "$sym" || {
     echo "MISSING $sym" >&2; exit 1;

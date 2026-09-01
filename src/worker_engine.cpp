@@ -44,7 +44,7 @@ LoadStats WorkerEngine::load(const std::string& sfz_path) {
     s.milliseconds = std::chrono::duration<double, std::milli>(t1 - t0).count();
     s.regions = api_.get_num_regions(synth_);
     s.preloaded_samples = api_.get_num_preloaded_samples(synth_);
-    s.sfizz_bytes = api_.get_num_bytes(synth_);
+    s.sfizz_bytes = api_.get_num_bytes64(synth_);
     return s;
 }
 

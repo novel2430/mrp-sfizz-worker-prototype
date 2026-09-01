@@ -5,6 +5,7 @@
 // patch/fork; they are part of this prototype's required renderer contract.
 
 #include <cstddef>
+#include <cstdint>
 
 extern "C" {
 
@@ -35,6 +36,6 @@ using sfizz_begin_offline_task_fn = bool (*)(sfizz_synth_t*, unsigned int);
 using sfizz_get_num_active_voices_fn = int (*)(sfizz_synth_t*);
 using sfizz_get_num_regions_fn = int (*)(sfizz_synth_t*);
 using sfizz_get_num_preloaded_samples_fn = std::size_t (*)(sfizz_synth_t*);
-using sfizz_get_num_bytes_fn = int (*)(sfizz_synth_t*);
+using sfizz_get_num_bytes64_fn = std::uint64_t (*)(sfizz_synth_t*);
 
 } // extern "C"
