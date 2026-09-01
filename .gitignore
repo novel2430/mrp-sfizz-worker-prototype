@@ -3,3 +3,4 @@
 .venv/
 build/
 quick-gate.sh
+__pycache__/
